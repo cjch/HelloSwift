@@ -25,6 +25,7 @@
 /* Begin PBXFileReference section */
 		22E21AF21C4F87FB0047A2C4 /* HelloSwift */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = HelloSwift; sourceTree = BUILT_PRODUCTS_DIR; };
 		22E21AF51C4F87FB0047A2C4 /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
+		22E21AFC1C51C4F30047A2C4 /* MyPlayground.playground */ = {isa = PBXFileReference; lastKnownFileType = file.playground; path = MyPlayground.playground; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -58,6 +59,7 @@
 			isa = PBXGroup;
 			children = (
 				22E21AF51C4F87FB0047A2C4 /* main.swift */,
+				22E21AFC1C51C4F30047A2C4 /* MyPlayground.playground */,
 			);
 			path = HelloSwift;
 			sourceTree = "<group>";
@@ -239,6 +241,7 @@
 				22E21AFB1C4F87FB0047A2C4 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

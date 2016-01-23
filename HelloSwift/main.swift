@@ -15,6 +15,16 @@ var n = Int(3.14)
 var n1 = 3.141 as Int
 print(n, n1)
 
+var s0: Int = 3
+var s1: String
+var s2 = "abc"
+var s3: String?
+var s4: String!
+s1 = "s1"
+s4 = nil
+
+print(s0, s1, s2)
+
 typealias Volume = Int
 var vol:Volume = 100
 print(vol)
@@ -100,3 +110,4 @@ let rst3 = originList.sort({ (s1: String, s2: String) -> Bool in return s1 > s2 
 let rst4 = originList.sort({ s1, s2 in return s1 > s2 })
 let rst5 = originList.sort({ $0 > $1 })
 print("closure sort: ", rst3, rst4, rst5, separator: "\n")
+
