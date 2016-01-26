@@ -77,7 +77,7 @@ tailClosure {
 类型属性  类似C中的静态变量或常量，使用static定义，class重写，必须指定默认值，线程安全，延迟计算  
 
 ###方法
-实例方法  值类型的属性不能在其实例方法中修改，可添加mutating关键字，然后就可以在方法中改变属性值和self  
+实例方法  值类型的属性不能在其实例方法中修改，可添加**mutating**关键字，然后就可以在方法中改变属性值和self  
 类型方法  使用**static**，用**class**重写  
 
 ###重写
@@ -167,7 +167,7 @@ do-catch， try语句抛出错误，然后跳转到匹配的catch语句执行。
 
 ####指定清理操作  
 使用**defer**在代码执行到要离开当前代码段之前去执行一段语句，也就是说defer将代码的执行延迟到退出当前作用域之前。  
-defer代码按照他们被指定的相反顺序执行。
+defer代码按照它们被指定的相反顺序执行。
 
 ```
 func deferSent() {
@@ -187,3 +187,116 @@ deferSent()
 
 **AnyObject**可以代表任何Class类型的实例  
 **Any**表示任何类型，包括方法类型(function types)
+
+##Extension
+通过扩展添加额外的功能，或提供协议的实现
+
+	extension SomeType: aProtocol, bProtocol {
+		
+	}
+
+- 添加计算属性，但不能添加存储属性，也不可以向已有属性添加属性观测器
+
+- 添加构造器，不能添加指定构造器和析构器
+
+- 方法，可变实例方法；在结构体和枚举中修改self或其属性的方法必须标注为**mutating**。
+
+- 下标subscrpt
+
+- 嵌套类型
+
+##协议 protocol
+
+	protocol someProtocol: superProtocol {
+		var readwriteVarible: Int { get set }
+		var readonlyVarible: Int { get } //只读属性，但其遵循者中的该属性也可以是可写的
+		static var classVarible: Int { get set } //用static或class关键字声明类属性
+		
+		func someInstanceMethod() -> Int
+	 	static func someTypeMethod() -> Int
+	 	mutating func Toggle()
+	 	
+	 	init(a: Int)
+	 	init?(a: Int, str: String)
+	}
+	
+	class SomeClass: SomeSuperClass, someProtocol, bProtocol {
+		
+		required init(a: Int) {
+			//
+		}
+		required init?(a: Int, str: String) {
+			//
+		}
+	}
+
+####属性
+规定协议的遵循者提供特定名称和类型的实例属性或类属性，不指定是否是存储型还是计算型属性，另外还需要指出读写属性
+
+####方法
+协议中的方法不写出方法体，不支持默认参数值
+
+mutating方法：类实现时不写mutating关键字，结构体、枚举实现时则必须写mutating。
+
+####构造器
+和方法类似。在实现协议时，可以指定协议中的构造器为指定构造器或便利构造器，在这两种情况下，都必须在实现中标记 **required** 修饰符。  
+
+如果子类重写父类的指定构造器，且该指定构造器遵循某个协议，那么该构造器的实现需要同时标记 **required** 和 **override**
+
+在协议中定义可失败构造器。如果协议中定义了可失败构造器，则实现中必须添加同样的可失败构造器或非可失败构造器；如果协议中定义了非可失败构造器，则实现中必须添加同样的非可失败构造器或隐式解析的可失败构造器（**init!**）
+
+####协议类型
+协议可以当做类型使用
+
+####代理
+
+####协议扩展
+* 在扩展中添加协议成员  
+* 通过扩展补充协议声明：当一个类型已经实现了协议的所有要求，却没有声明为遵循该协议，可通过空的扩展补充协议声明（类型不会自动转换，必须显示声明）
+
+	```
+	protocol SomeProtocol {
+		func someFunc() -> Int
+	}
+	// 添加协议成员
+	extension SomeClass: SomeProtocol {
+		func someFunc() -> Int {
+			return 1
+		}
+	}
+	//补充协议声明
+	extension SomeClass: SomeProtocol {}
+	```
+
+* 扩展协议可以为遵循者提供方法或属性的实现；还可以提供协议的默认实现，如果遵循者提供了自己的实现，则遵循者自己的实现会被使用。
+
+	```
+	extension SomeProtocol {
+		func someFunc() -> Int {
+			return 1
+		}
+	}
+	```
+
+* 在扩展协议时，通过 **where** 指定一些限制，直邮满足这些限制的遵循者才能获得协议扩展提供的属性和方法。
+
+####协议的类属性
+协议可以继承，和类的继承相似
+
+添加**class**关键字，限制协议只能适配到类类型
+
+	protocol someClassProtocol: class, SomeSuperProtocol {
+		// protocol body
+	}
+
+####协议合成
+利用`protocol<aProtocol, bProtocol...>`对协议进行组合。协议合成不会生成新的协议类型，只是一个临时协议。
+
+####协议的一致性
+**is** 检查实例是否遵循某个协议
+
+**as?** 返回可选值，实例遵循协议时，返回协议类型，否则返回nil；**as** 用于强制向下装换。
+
+####可选协议
+使用关键字**optional**，则类型自动变成可选的，比如方法 `(void) -> String` 变成 `((void) -> String)?`，方法调用使用可选链。  
+可选协议只能在含有 **@obj** 前缀的协议中生效，**@obj**表示协议将暴露给OC代码。 
