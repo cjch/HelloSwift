@@ -117,5 +117,73 @@ tailClosure {
 ####必要构造器
 **required** init... 表明所有该类的子类都必须实现该构造器
 
+##引用计数
+弱引用**weak**和无主引用**unowned**：生命周期中会变为nil的实例使用弱引用，否则使用无主引用
 
+在循环引用中，存在两个属性值都必须有值，并且初始化后都不会为nil，这是需要一个无主属性，另一个为隐式可选类型
 
+闭包引起的循环强引用：使用闭包捕获列表
+
+```
+var someClusure: Void -> String = {
+	[unowned self, weak ovar = self.varible!] in 
+	// closure body
+}
+```
+
+##可空链式调用 optional chaining
+
+##错误处理
+**ErrorType**协议  
+最好使用枚举定义一组相关的错误，在代码中使用**throws**抛出错误
+
+	enum CustomError:ErrorType {
+		case InvalidInput
+		case OutofStack
+	}
+	throws CustomError.InvalidInput
+
+throwing函数，将错误传递给调用该函数的代码。  
+只有throwing函数能传递错误，其他函数内部抛出的错误只能在此函数内部处理  
+在调用throwing函数的代码处，要么直接处理错误，要么继续传递错误
+
+	func canThrowErrors() throws -> String
+
+do-catch， try语句抛出错误，然后跳转到匹配的catch语句执行。如果没有匹配上任一catch，错误会继续传播到周围的作用域：要么是外围的do-catch，要么是一个throwing函数的内部
+
+	do {
+		try expression
+	} catch pattern1 {
+		//error handing
+	} catch pattern2 where condition {
+		//error handing
+	} catch {
+		//匹配其他所有的错误
+	}
+
+使用**try?**将错误转换成可选值
+
+使用**try!**使错误失效，然后包含到断言中，将错误转换为运行时错误
+
+####指定清理操作  
+使用**defer**在代码执行到要离开当前代码段之前去执行一段语句，也就是说defer将代码的执行延迟到退出当前作用域之前。  
+defer代码按照他们被指定的相反顺序执行。
+
+```
+func deferSent() {
+	defer { print("defer 1") }
+	defer { print("defer 2") } //该句先执行
+}
+
+deferSent()
+// 执行结果:
+// defer 2
+// defer 1
+```
+##类型转换
+使用 **is** 检查一个实例是否属于特定子类型  
+
+向下转换 **as?** 或 **as！**。条件转换返回一个可选值，强制转换失败时会出发运行时错误。
+
+**AnyObject**可以代表任何Class类型的实例  
+**Any**表示任何类型，包括方法类型(function types)

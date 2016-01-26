@@ -16,6 +16,7 @@ var dct = Direction.East
 dct = .South
 let drw = dct.rawValue
 
+
 switch dct {
 case .East:
     print("east direction")
@@ -150,3 +151,38 @@ for item in breakList {
 }
 
 
+class Country {
+    let name: String
+    var capitalCity: City!
+    var description: String {
+        return name + " " + capitalCity.name
+    }
+    init(name: String, capitalCity: String) {
+        self.name = name
+        self.capitalCity = City(name: capitalCity, country: self)
+    }
+}
+class City {
+    let name: String
+    unowned let country: Country
+    init(name: String, country: Country) {
+        self.name = name
+        self.country = country
+    }
+}
+
+var country = Country(name: "china", capitalCity: "beijing")
+print(country.description)
+
+
+func deferTest() {
+    print("enter deferTest")
+    defer {
+        print(1)
+    }
+    defer { print(2) }
+    
+    print("will end deferTest")
+}
+
+deferTest()
